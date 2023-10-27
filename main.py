@@ -3,6 +3,22 @@ import time
 import itertools
 import os
 
+# x____________________x #
+# Dev Settings Zone:
+showAns = True
+notClear = False
+# x____________________x #
+
+def display(num, game_ans):
+    for i in range(4):
+        display_var = num[i]
+        if display_var == -99:
+            display_var = "-"
+        print(f" | {display_var}")
+    if showAns:
+        print(f"[Dev] Answer: {game_ans}")
+    return
+
 def checker(slot1, num, toggle=True):
     for i in range(len(num)):
         if slot1 == num[i]:
@@ -13,11 +29,12 @@ def checker(slot1, num, toggle=True):
     else: return False
 
 def cls():
-    if os.name == 'posix':
-        os.system('clear')
-    elif os.name == 'nt':
-        os.system('cls')
-    else: print("\n"*30)
+    if not notClear:
+        print("\n" * 30)
+        if os.name == 'posix':
+            os.system('clear')
+        elif os.name == 'nt':
+            os.system('cls')
 
 def is_str(s):
     try:
@@ -49,6 +66,7 @@ def check(num1, num2, num3, num4):
 
 
 def main():
+    cls()
     op_array = ["+", "-", "×", "÷"]
     print("×——————————————————————————————————×\nGenerating numbers, please wait..\n")
     while True:
@@ -70,37 +88,32 @@ def main():
     while True:
         cls()
         print("×——————————————————————————————————×")
-        if num.count(0) >= 3:
+        if num.count(-99) >= 3:
             if 24 in num:
-                print("You solved the 24 Game!\nThanks for playing!")
+                print(f"You solved the 24 Game!\nThanks for playing!\nComputer Way: {game_ans}\nYou Way: idk how to save later ok?")
+                print("×——————————————————————————————————×")
                 break
             else:
-                print(f"Game Over Your Number ran out :--;")
-                var = input("1) Try Again\n2) Show Answer\n> ")
-                if var == "2": print(f"Computer Answer: {game_ans}"); break
-                if var == "1":
-                    print(f"Ok wait a moment: {clone_num[0]}, {clone_num[1]}, {clone_num[2]}, {clone_num[3]}")
-                    time.sleep(3)
-                    num = clone_num
-                else:
-                    try:
-                        print(f"Unknown Input: {game_ans}")
+                while True:
+                    print(f"Game Over Your Number ran out :--;")
+                    var = input("1) Try Again - Reset all number index\n2) Show Answer - Show the computer answer\n(1/2) > ")
+                    if var == "2": print(f"Computer Answer: {game_ans}"); break
+                    if var == "1":
+                        print(f"Ok wait a moment [Reset number..] : {clone_num[0]}, {clone_num[1]}, {clone_num[2]}, {clone_num[3]}")
+                        time.sleep(3)
+                        num = clone_num
                         break
-                    except:
-                        print(f"Unknown error")
-                        break
+                    else:
+                        print(f"Invalid Input '{var}'\n* Please type only (1/2)")
+                        time.sleep(3)
         print("24 Game:\nSlot | Number")
-        for i in range(4):
-            display = num[i]
-            if display == 0:
-                display = "-"
-            print(f" | {display}")
+        display(num, game_ans)
         print("[Calculate: [_ _ _ = __]")
         while True:
             try:
                 slot1 = int(input("Enter your number\n> "))
-                if slot1 == 0:
-                    print("Invalid Input. Slot cannot be 0.")
+                if slot1 == -99:
+                    print("Invalid Input. That input already taken")
                 else:
                     if checker(slot1, num, False):
                         break
@@ -108,16 +121,12 @@ def main():
                 print("Invalid Input. Please enter a number.")
         slot_1 = checker(slot1, num, True)
         save1 = num[slot_1]
-        num[slot_1] = 0
+        num[slot_1] = -99
 
         cls()
         print("×——————————————————————————————————×")
         print(f"24 Game:\nSlot | Operation\nNumber:")
-        for i in range(4):
-            display = num[i]
-            if display == 0:
-                display = "-"
-            print(f"| {display}")
+        display(num, game_ans)
         print("\n\nOperation")
         print("1    | +")
         print("2    | -")
@@ -144,27 +153,27 @@ def main():
         cls()
         print("×——————————————————————————————————×")
         print("24 Game:\nSlot | Number")
-        for i in range(4):
-            display = num[i]
-            if display == 0:
-                display = "-"
-            print(f" | {display}")
+        display(num, game_ans)
         print(f"[Calculate: [{save1} {ops} _ = __]")
         while True:
             try:
                 slot2 = int(input("Enter your second slot\n> "))
-                if checker(slot2, num, False): break
-                print("Invalid Input. Slot cannot be 0.")
+                if slot2 == -99:
+                    print("Invalid Input. That input already taken.")
+                else:
+                    if checker(slot2, num, False): break
+                    else:
+                        print("Invalid Input. Please enter a number.")
             except ValueError:
                 print("Invalid Input. Please enter a number.")
 
         slot_2 = checker(slot2, num, True)
         save2 = num[slot_2]
-        num[slot_2] = 0
+        num[slot_2] = -99
 
         cls()
         print("×——————————————————————————————————×")
-        ans = 0
+        ans = -99
         op = op + 1
         save1 = int(save1)
         save2 = int(save2)
@@ -180,6 +189,6 @@ def main():
         print("Preparing for the next round..")
         num[slot_1] = ans
         print("×——————————————————————————————————×")
-        time.sleep(0.5)
+        time.sleep(1)
 
 main()
